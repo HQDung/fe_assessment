@@ -28,7 +28,7 @@ const Home = () => {
   useEffect(() => {
     const selectedFilterNames = Object.keys(selectedFilter).filter(f => selectedFilter[f]);
     if (selectedFilterNames.length) {
-      const data = posts.filter(p => p.categories.some(c => selectedFilterNames.indexOf(c) >= 0))
+      const data = posts.filter(p => selectedFilterNames.every(c => p.categories.includes(c)))
       setFilteredPosts(data)
     } else {
       setFilteredPosts([])
@@ -66,7 +66,13 @@ const Home = () => {
           Filter
         </button>
       </div>
-      <div className="w-1/4 overflow-y-auto p-4 hidden md:block">
+      <div
+        className={`md:w-1/4 absolute md:relative overflow-y-auto p-4 transition-all ease-out w-full h-full bg-white z-10 top-0 md:left-0 ${filterHidden ? "left-full" : "left-0"}`}>
+        <div className='text-right py-2 border-b mb-4 md:hidden'>
+          <button
+            onClick={handleCloseFilter}
+            className='font-bold text-lg p-2 cursor-pointer'>✕</button>
+        </div>
         <Filter
           items={categories}
           onChange={handleCheckboxChange}
@@ -81,17 +87,6 @@ const Home = () => {
           <LoadingIndicator hideText />
         </div>}
       </section>
-      <div className={`absolute overflow-y-auto transition-all ease-out p-4 w-full h-full bg-white z-10 top-0 ${filterHidden ? "left-full" : "left-0"} md:hidden`}>
-        <div className='text-right py-2 border-b mb-4'>
-          <button
-            onClick={handleCloseFilter}
-            className='font-bold text-lg p-2 cursor-pointer'>✕</button>
-        </div>
-        <Filter
-          items={categories}
-          onChange={handleCheckboxChange}
-        />
-      </div>
     </main>
   );
 };
